@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import L from 'react';
 import { Map, TileLayer, useLeaflet } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import data from '../assets/data';
@@ -11,6 +12,8 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 import 'leaflet-geosearch/dist/geosearch.css';
 
 Geocode.enableDebug();
+
+const $ = require('jquery');
 
 const Search = (props) => {
   const { map } = useLeaflet() // access to leaflet map
@@ -26,6 +29,43 @@ const Search = (props) => {
   }, [props])
 
   return null // don't want anything to show up from this comp
+}
+
+const DisplayDB = (props) => {
+  const { map } = useLeaflet() // access to leaflet map
+  const { provider } = props
+
+  const DBicon = L.icon({
+    iconUrl: "../assets/PinIcon.svg",
+    iconSize: [25,25]
+  });
+
+  $.getJSON("connectDb.php", function(data) {
+    for (let i = 0; i < data.length; i++) {
+      const id = data[i].ID;
+      const location = new L.LatLng(data[i].Latitude, data[i].Longitude);
+      const firstname = data[i].FirstName;
+      const lastname = data[i].LastName;
+      const phone = data[i].PhoneNumber;
+      const addr = data[i].StreetAddress;
+      const unit = data[i].UnitNumber;
+      const city = data[i].City;
+      const state = data[i].StateProvince;
+      const zip = data[i].ZipCode;
+      
+      const marker = new L.Marker(location, {
+        icon: DBicon,
+        title: firstname + " " + lastname
+      });
+
+      const content = "<h2>" + firstname + lastname + "</h2>" + "<p>" + addr + unit + "</br>" + city + state + zip + "</p>";
+
+      marker.bindPopup(content, {
+        maxWidth: '200'
+      });
+      marker.addTo(map);
+    }
+  });
 }
 
 export default function MapView() {

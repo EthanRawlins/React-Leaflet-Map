@@ -17,7 +17,7 @@
     }
 
     function getActiveClients() {
-        $sql = "SELECT ID, FirstName, LastName, PhoneNumber, StreetAddress, UnitNumber, City, StateProvince, ZipCode FROM contacts WHERE List Name='Active Client (when a person has an active policy)'";
+        $sql = "SELECT ID, FirstName, LastName, PhoneNumber, StreetAddress, UnitNumber, City, StateProvince, ZipCode, Latitude, Longitude FROM test";
         $rs = $db->query($sql);
 
         if (!$rs) {
@@ -29,8 +29,8 @@
         while($r = $rs->fetch(PDO::FETCH_ASSOC)) {
             $rows[] = $r;
         }
+
+        print json_encode($rows);
         $db = NULL;
-        
-        return $rows;
     }
 ?>
