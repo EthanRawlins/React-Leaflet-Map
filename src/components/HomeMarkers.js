@@ -4,7 +4,7 @@ import {HomeIcon} from './HomeIcon';
 import MarkerPopup from './MarkerPopup';
 import db from '../connectDb.php';
 import L from 'leaflet';
-import nominatim from 'leaflet-control-geocoder-1.13.0';
+// import nominatim from 'leaflet-control-geocoder-1.13.0';
 
 //L.Control.nominatim.geoCoder();
 
