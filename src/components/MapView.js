@@ -13,7 +13,7 @@ import 'leaflet-geosearch/dist/geosearch.css';
 
 Geocode.enableDebug();
 
-const $ = require('jquery');
+const $ = require('jquery'); // include jquery
 
 const Search = (props) => {
   const { map } = useLeaflet() // access to leaflet map
@@ -31,16 +31,14 @@ const Search = (props) => {
   return null // don't want anything to show up from this comp
 }
 
-const DisplayDB = (props) => {
-  const { map } = useLeaflet() // access to leaflet map
-  const { provider } = props
+function displayDB (map) {
 
-  const DBicon = L.icon({
+  var DBicon = L.icon({
     iconUrl: "../assets/PinIcon.svg",
     iconSize: [25,25]
   });
 
-  $.getJSON("connectDb.php", function(data) {
+  $.getJSON("../connectDb.php", function(data) {
     for (let i = 0; i < data.length; i++) {
       const id = data[i].ID;
       const location = new L.LatLng(data[i].Latitude, data[i].Longitude);
@@ -70,7 +68,7 @@ const DisplayDB = (props) => {
 
 export default function MapView() {
   const currentLocation = { lat: 52.52437, lng: 13.41053 };
-  const zoom = 12;
+  const zoom = 8;
     return (
       <Map center={currentLocation} zoom={zoom}>
         <TileLayer
@@ -79,6 +77,7 @@ export default function MapView() {
           >
           </TileLayer>
           <Search provider={new OpenStreetMapProvider()}/>
+          {/* <DisplayDB provider = {new OpenStreetMapProvider()}/> */}
         <HomeMarkers homes={data.homes}/>
         <CarMarkers cars={data.cars}/>
         <LifeMarkers lifes={data.lifes}/>
