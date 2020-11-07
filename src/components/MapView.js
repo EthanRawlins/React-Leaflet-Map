@@ -69,8 +69,10 @@ function displayDB (map) {
 export default function MapView() {
   const currentLocation = { lat: 52.52437, lng: 13.41053 };
   const zoom = 8;
+  const maxzoom = 19;
+  const minzoom = 2;
     return (
-      <Map center={currentLocation} zoom={zoom}>
+      <Map center={currentLocation} zoom={zoom} maxZoom={maxzoom} minZoom={minzoom}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
