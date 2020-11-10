@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react';
-import L from 'react';
 import { Map, TileLayer, useLeaflet } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import data from '../assets/data';
+import clients from '../assets/contacts';
 import HomeMarkers from './HomeMarkers';
 import CarMarkers from './CarMarkers';
 import LifeMarkers from './LifeMarkers';
 import PinMarkers from './PinMarkers';
 import Geocode from "react-geocode";
+//import displayDB from './displayDB';
+import Clientmarkers from "./ClientMarkers";
 import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 import 'leaflet-geosearch/dist/geosearch.css';
 
@@ -31,41 +33,6 @@ const Search = (props) => {
   return null // don't want anything to show up from this comp
 }
 
-function displayDB (map) {
-
-  var DBicon = L.icon({
-    iconUrl: "../assets/PinIcon.svg",
-    iconSize: [25,25]
-  });
-
-  $.getJSON("../connectDb.php", function(data) {
-    for (let i = 0; i < data.length; i++) {
-      const id = data[i].ID;
-      const location = new L.LatLng(data[i].Latitude, data[i].Longitude);
-      const firstname = data[i].FirstName;
-      const lastname = data[i].LastName;
-      const phone = data[i].PhoneNumber;
-      const addr = data[i].StreetAddress;
-      const unit = data[i].UnitNumber;
-      const city = data[i].City;
-      const state = data[i].StateProvince;
-      const zip = data[i].ZipCode;
-      
-      const marker = new L.Marker(location, {
-        icon: DBicon,
-        title: firstname + " " + lastname
-      });
-
-      const content = "<h2>" + firstname + lastname + "</h2>" + "<p>" + addr + unit + "</br>" + city + state + zip + "</p>";
-
-      marker.bindPopup(content, {
-        maxWidth: '200'
-      });
-      marker.addTo(map);
-    }
-  });
-}
-
 export default function MapView() {
   const currentLocation = { lat: 52.52437, lng: 13.41053 };
   const zoom = 8;
@@ -77,11 +44,11 @@ export default function MapView() {
           >
           </TileLayer>
           <Search provider={new OpenStreetMapProvider()}/>
-          {/* <DisplayDB provider = {new OpenStreetMapProvider()}/> */}
         <HomeMarkers homes={data.homes}/>
         <CarMarkers cars={data.cars}/>
         <LifeMarkers lifes={data.lifes}/>
         <PinMarkers pins={data.pins}/>
+        <Clientmarkers clients={data.pins}/>
       </Map>
     );
 };
