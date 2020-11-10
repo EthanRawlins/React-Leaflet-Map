@@ -1,3 +1,29 @@
+import React, { Fragment } from 'react'
+import {Marker} from 'react-leaflet';
+import {PinIcon} from './PinIcon';
+import MarkerPopup from './MarkerPopup';
+import db from '../connectDb.php';
+import L from 'leaflet';
+
+let jsonFile
+
+const displayDB = (props) => {
+    const { clients } = props;
+    // const row = 23;
+    // rows.forEach(function(rows) {
+    //   row = row;
+    // });
+    const markers = clients.map((client, index) => (
+      <Marker key={index} position={client.geometry} icon={PinIcon} >
+        <MarkerPopup data={client}/>
+      </Marker>
+    ));
+  
+    return <Fragment>{markers}</Fragment>
+  };
+  
+  export default displayDB;
+
 const displayDB = (props) => {
     const { map } = useLeaflet() // access to leaflet map
     const { provider } = props
