@@ -48,7 +48,7 @@ export default function MapView() {
         <CarMarkers cars={data.cars}/>
         <LifeMarkers lifes={data.lifes}/>
         <PinMarkers pins={data.pins}/>
-        <Clientmarkers clients={clients.clients}/>
+        <Clientmarkers clients={clients.contacts}/>
       </Map>
     );
 };
