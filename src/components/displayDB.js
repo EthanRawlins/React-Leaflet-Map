@@ -5,8 +5,7 @@ import MarkerPopup from './MarkerPopup';
 import db from '../connectDb.php';
 import L from 'leaflet';
 
-let jsonFile
-
+/*
 const displayDB = (props) => {
     const { clients } = props;
     // const row = 23;
@@ -21,7 +20,7 @@ const displayDB = (props) => {
   
     return <Fragment>{markers}</Fragment>
   };
-  
+  */
   export default displayDB;
 
 const displayDB = (props) => {
