@@ -30,7 +30,12 @@
             $rows[] = $r;
         }
 
-        print json_encode($rows);
+        echo '<script>alert($rows)</script>';
+
+        $fp = fopen('active.json', 'w');
+        fwrite($fp, json_encode($rows));
+        fclose($fp);
+
         $db = NULL;
     }
 ?>

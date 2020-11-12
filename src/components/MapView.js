@@ -13,6 +13,8 @@ import Clientmarkers from "./ClientMarkers";
 import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 import 'leaflet-geosearch/dist/geosearch.css';
 
+require("../connectDb.php");
+
 Geocode.enableDebug();
 
 const $ = require('jquery'); // include jquery

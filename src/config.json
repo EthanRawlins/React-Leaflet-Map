@@ -1,0 +1,10 @@
+{
+    "database": {
+        "host": "cpanel-host2061.hostmonster.com",
+        "port": 3306,
+        "user": "feelthes_jared",
+        "password": "ullrich",
+        "database": "feelthes_map_addresses"
+    },
+    "secret": "secret"
+}
