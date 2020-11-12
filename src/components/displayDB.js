@@ -1,8 +1,3 @@
-import React, { Fragment } from 'react'
-import {Marker} from 'react-leaflet';
-import {PinIcon} from './PinIcon';
-import MarkerPopup from './MarkerPopup';
-import db from '../connectDb.php';
 import L from 'leaflet';
 
 /*
