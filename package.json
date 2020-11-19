@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "express": "^4.17.1",
     "jquery": "^3.5.1",
     "leaflet": "^1.5.1",
     "leaflet-geosearch": "^3.0.6",
     "leaflet-search": "^2.9.8",
     "mysql": "^2.18.1",
     "mysql2": "^2.2.5",
+    "prettier": "^2.1.2",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-geocode": "^0.2.2",
@@ -37,5 +39,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://localhost:8080"
 }
