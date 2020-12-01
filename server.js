@@ -6,6 +6,7 @@ const mysql      = require('mysql');
 const fs = require('fs')
 
 const request = require('request'); 
+const Nominatim = require('nominatim-geocoder'); // for geocoding
 
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 function connect() {
@@ -57,21 +58,28 @@ function addr_search()
             var xmlhttp = new XMLHttpRequest();
  
             for( let prop in data ){
-               var url = "https://nominatim.openstreetmap.org/search?format=json&limit=3&q=" + prop.StreetAddress + ', ' + prop.City + ', ' + prop.StateProvince;
+               //var url = "https://nominatim.openstreetmap.org/search?format=json&limit=3&q=" + prop.StreetAddress + ', ' + prop.City + ', ' + prop.StateProvince;
                
-               console.log(data[prop]);
-               xmlhttp.onreadystatechange = function()
-               {
-                 if (this.readyState == 4 && this.status == 200)
-                 {
-                   const temp = JSON.parse(this.responseText);
-                   data[prop].geometry = '[' + temp.lat + ',' + temp.lon + ']';
-                   console.log(prop);
+                const geocoder = new Nominatim();
+                const query = '\'' + data[prop].StreetAddress + ', ' + data[prop].City + ',' + data[prop].StateProvince + '\'';
+
+               //console.log(data[prop]);
+              //xmlhttp.onreadystatechange = function()
+               //{
+                 //if (this.readyState == 4 && this.status == 200)
+                 //{
+                   //const temp = JSON.parse(this.responseText);
+                   geocoder.search({ q: query })
+                   .then((response) => {
+                   data[prop].geometry = '[' + response + ']';
+                   console.log(data[prop].geometry);
+                   })
+                   .catch((error) => {
+                       console.log(error)
+                   })
                 }
-               };
-               xmlhttp.open("GET", url, true);
-               xmlhttp.send(); 
-           }
+               //xmlhttp.open("GET", url, true);
+               //xmlhttp.send(); 
            
            const data1 = JSON.stringify(data);
            fs.writeFileSync('./src/assets/contact.json', '{"ActiveContacts":' + data1 + '}', err => {
