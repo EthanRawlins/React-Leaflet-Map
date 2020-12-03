@@ -45,6 +45,78 @@ connection.query('SELECT ID, FirstName, LastName, PhoneNumber, StreetAddress, Un
 
 }
 
+function abbrState(input, to){
+    
+    var states = [
+        ['Arizona', 'AZ'],
+        ['Alabama', 'AL'],
+        ['Alaska', 'AK'],
+        ['Arkansas', 'AR'],
+        ['California', 'CA'],
+        ['Colorado', 'CO'],
+        ['Connecticut', 'CT'],
+        ['Delaware', 'DE'],
+        ['Florida', 'FL'],
+        ['Georgia', 'GA'],
+        ['Hawaii', 'HI'],
+        ['Idaho', 'ID'],
+        ['Illinois', 'IL'],
+        ['Indiana', 'IN'],
+        ['Iowa', 'IA'],
+        ['Kansas', 'KS'],
+        ['Kentucky', 'KY'],
+        ['Louisiana', 'LA'],
+        ['Maine', 'ME'],
+        ['Maryland', 'MD'],
+        ['Massachusetts', 'MA'],
+        ['Michigan', 'MI'],
+        ['Minnesota', 'MN'],
+        ['Mississippi', 'MS'],
+        ['Missouri', 'MO'],
+        ['Montana', 'MT'],
+        ['Nebraska', 'NE'],
+        ['Nevada', 'NV'],
+        ['New Hampshire', 'NH'],
+        ['New Jersey', 'NJ'],
+        ['New Mexico', 'NM'],
+        ['New York', 'NY'],
+        ['North Carolina', 'NC'],
+        ['North Dakota', 'ND'],
+        ['Ohio', 'OH'],
+        ['Oklahoma', 'OK'],
+        ['Oregon', 'OR'],
+        ['Pennsylvania', 'PA'],
+        ['Rhode Island', 'RI'],
+        ['South Carolina', 'SC'],
+        ['South Dakota', 'SD'],
+        ['Tennessee', 'TN'],
+        ['Texas', 'TX'],
+        ['Utah', 'UT'],
+        ['Vermont', 'VT'],
+        ['Virginia', 'VA'],
+        ['Washington', 'WA'],
+        ['West Virginia', 'WV'],
+        ['Wisconsin', 'WI'],
+        ['Wyoming', 'WY'],
+    ];
+
+    if (to == 'abbr'){
+        input = input.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+        for(i = 0; i < states.length; i++){
+            if(states[i][0] == input){
+                return(states[i][1]);
+            }
+        }    
+    } else if (to == 'name'){
+        input = input.toUpperCase();
+        for(i = 0; i < states.length; i++){
+            if(states[i][1] == input){
+                return(states[i][0]);
+            }
+        }    
+    }
+}
+
 function addr_search()
 {
 
@@ -55,40 +127,48 @@ function addr_search()
         }
         try {
             const data = JSON.parse(jsonString)
-            var xmlhttp = new XMLHttpRequest();
+            var query = '';
  
-            for( let prop in data ){
+            for( let prop in data['ActiveContacts'] ){
+                if (data['ActiveContacts'][prop].StreetAddress != "" && data['ActiveContacts'][prop].StreetAddress != " ") {
                //var url = "https://nominatim.openstreetmap.org/search?format=json&limit=3&q=" + prop.StreetAddress + ', ' + prop.City + ', ' + prop.StateProvince;
                
                 const geocoder = new Nominatim();
-                const query = '\'' + data[prop].StreetAddress + ', ' + data[prop].City + ',' + data[prop].StateProvince + '\'';
+                if (data['ActiveContacts'][prop].StateProvince.length <= 3) {
+                    const stateName = abbrState(data['ActiveContacts'][prop].StateProvince, 'name');
+                    query = '\'' + data['ActiveContacts'][prop].StreetAddress + ', ' + data['ActiveContacts'][prop].City + ', ' + stateName + '\'';
+                }
+                else {
+                    query = '\'' + data['ActiveContacts'][prop].StreetAddress + ', ' + data['ActiveContacts'][prop].City + ', ' + data['ActiveContacts'][prop].StateProvince + '\'';
+                }
 
-               //console.log(data[prop]);
+
               //xmlhttp.onreadystatechange = function()
                //{
                  //if (this.readyState == 4 && this.status == 200)
                  //{
                    //const temp = JSON.parse(this.responseText);
                    geocoder.search({ q: query })
-                   .then((response) => {
-                   data[prop].geometry = '[' + response + ']';
-                   console.log(data[prop].geometry);
+                   .then((response) => { 
+                       data['ActiveContacts'][prop].geometry = '[' + response.lat + ',' + response.lon + ']';
+                    console.log(response);
                    })
                    .catch((error) => {
                        console.log(error)
                    })
                 }
+                const data1 = JSON.stringify(data);
+                fs.writeFileSync('./src/assets/contact.json', '{"ActiveContacts":' + data1 + '}', err => {
+                    if (err) {
+                        console.log('Error writing file', err)
+                    } else {
+                        console.log('Successfully wrote file')
+                    }
+                });
+                
                //xmlhttp.open("GET", url, true);
                //xmlhttp.send(); 
-           
-           const data1 = JSON.stringify(data);
-           fs.writeFileSync('./src/assets/contact.json', '{"ActiveContacts":' + data1 + '}', err => {
-               if (err) {
-                   console.log('Error writing file', err)
-               } else {
-                   console.log('Successfully wrote file')
-               }
-           });
+            }
     } catch(err) {
             console.log('Error parsing JSON string:', err)
         }
