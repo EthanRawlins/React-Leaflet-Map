@@ -40,7 +40,6 @@ connection.query('SELECT ID, FirstName, LastName, PhoneNumber, StreetAddress, Un
             console.log('Successfully wrote file')
         }
     });
-    // mapData = JSON.parse(results);
 });
 
 }
@@ -131,7 +130,6 @@ function addr_search()
  
             for( let prop in data['ActiveContacts'] ){
                 if (data['ActiveContacts'][prop].StreetAddress != "" && data['ActiveContacts'][prop].StreetAddress != " ") {
-               //var url = "https://nominatim.openstreetmap.org/search?format=json&limit=3&q=" + prop.StreetAddress + ', ' + prop.City + ', ' + prop.StateProvince;
                
                 const geocoder = new Nominatim();
                 if (data['ActiveContacts'][prop].StateProvince.length <= 3) {
@@ -142,12 +140,6 @@ function addr_search()
                     query = '\'' + data['ActiveContacts'][prop].StreetAddress + ', ' + data['ActiveContacts'][prop].City + ', ' + data['ActiveContacts'][prop].StateProvince + '\'';
                 }
 
-
-              //xmlhttp.onreadystatechange = function()
-               //{
-                 //if (this.readyState == 4 && this.status == 200)
-                 //{
-                   //const temp = JSON.parse(this.responseText);
                    geocoder.search({ q: query })
                    .then((response) => { 
                        data['ActiveContacts'][prop].geometry = '[' + response.lat + ',' + response.lon + ']';
@@ -157,6 +149,7 @@ function addr_search()
                        console.log(error)
                    })
                 }
+
                 const data1 = JSON.stringify(data);
                 fs.writeFileSync('./src/assets/contact.json', '{"ActiveContacts":' + data1 + '}', err => {
                     if (err) {
@@ -165,9 +158,6 @@ function addr_search()
                         console.log('Successfully wrote file')
                     }
                 });
-                
-               //xmlhttp.open("GET", url, true);
-               //xmlhttp.send(); 
             }
     } catch(err) {
             console.log('Error parsing JSON string:', err)
