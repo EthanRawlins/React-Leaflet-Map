@@ -132,10 +132,11 @@ function addr_search()
                 if (data['ActiveContacts'][prop].StreetAddress != "" && data['ActiveContacts'][prop].StreetAddress != " ") {
                
                 const geocoder = new Nominatim();
-                if (data['ActiveContacts'][prop].StateProvince.length <= 3) {
+                if (data['ActiveContacts'][prop].StateProvince != "") {
+                    if (data['ActiveContacts'][prop].StateProvince.length <= 3) {
                     const stateName = abbrState(data['ActiveContacts'][prop].StateProvince, 'name');
                     query = '\'' + data['ActiveContacts'][prop].StreetAddress + ', ' + data['ActiveContacts'][prop].City + ', ' + stateName + '\'';
-                }
+                }}
                 else {
                     query = '\'' + data['ActiveContacts'][prop].StreetAddress + ', ' + data['ActiveContacts'][prop].City + ', ' + data['ActiveContacts'][prop].StateProvince + '\'';
                 }
