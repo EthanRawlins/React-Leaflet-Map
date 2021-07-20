@@ -114,7 +114,7 @@ function abbrState(input, to){
         }    
     }
 }
-/*
+/* Geocoding, do not run it unless there's an update
 console.log('hello')
 
     fs.readFile('./src/assets/contact.json', 'utf8', (err, jsonString) => {
