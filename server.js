@@ -124,6 +124,7 @@ console.log('hello')
         }
         try {
             const data = JSON.parse(jsonString)
+<<<<<<< HEAD
 
             // use this line to overwrite the file
             fs.writeFile('./src/assets/contact1.json', '{"clients":[', function(){console.log('done')})
@@ -148,11 +149,6 @@ console.log('hello')
                 console.log(res[0]);
                 if (prop < data.length - 1){
                 fs.appendFile('./src/assets/contact1.json', JSON.stringify(data[prop]) + ',', err => {
-                    if (err) {
-                        console.log('Error writing file', err)
-                    } else {
-                        console.log('Successfully wrote file ' + prop)
-                    }
                 })}
                  else {
                 fs.appendFile('./src/assets/contact1.json', JSON.stringify(data[prop]) + ']}', err => {
