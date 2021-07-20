@@ -114,7 +114,7 @@ function abbrState(input, to){
         }    
     }
 }
-
+/*
 console.log('hello')
 
     fs.readFile('./src/assets/contact.json', 'utf8', (err, jsonString) => {
@@ -124,7 +124,6 @@ console.log('hello')
         }
         try {
             const data = JSON.parse(jsonString)
-<<<<<<< HEAD
 
             // use this line to overwrite the file
             fs.writeFile('./src/assets/contact1.json', '{"clients":[', function(){console.log('done')})
@@ -167,7 +166,7 @@ console.log('hello')
     } catch(err) {
             console.log('Error parsing JSON string:', err)
         }
-    });
+    })*/
 
 app.use(express.static(path.join(__dirname, 'public')))
 
