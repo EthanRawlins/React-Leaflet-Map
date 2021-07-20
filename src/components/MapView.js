@@ -2,22 +2,17 @@ import React, { useEffect } from 'react';
 import { Map, TileLayer, useLeaflet } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import data from '../assets/data';
-import clients from '../assets/contacts';
+import clients from '../assets/contact1';
 import HomeMarkers from './HomeMarkers';
 import CarMarkers from './CarMarkers';
 import LifeMarkers from './LifeMarkers';
 import PinMarkers from './PinMarkers';
 import Geocode from "react-geocode";
-//import displayDB from './displayDB';
 import Clientmarkers from "./ClientMarkers";
 import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 import 'leaflet-geosearch/dist/geosearch.css';
 
-require("../connectDb.php");
-
 Geocode.enableDebug();
-
-const $ = require('jquery'); // include jquery
 
 const Search = (props) => {
   const { map } = useLeaflet() // access to leaflet map
@@ -30,13 +25,13 @@ const Search = (props) => {
 
       map.addControl(searchControl) // this is how you add a control in vanilla leaflet
       return () => map.removeControl(searchControl)
-  }, [props])
+  }, [props, map, provider])
 
   return null // don't want anything to show up from this comp
 }
 
 export default function MapView() {
-  const currentLocation = { lat: 52.52437, lng: 13.41053 };
+  const currentLocation = { lat: 39.742043, lng: -104.991531 };
   const zoom = 8;
   const maxzoom = 19;
   const minzoom = 2;
@@ -48,11 +43,7 @@ export default function MapView() {
           >
           </TileLayer>
           <Search provider={new OpenStreetMapProvider()}/>
-        <HomeMarkers homes={data.homes}/>
-        <CarMarkers cars={data.cars}/>
-        <LifeMarkers lifes={data.lifes}/>
-        <PinMarkers pins={data.pins}/>
-        <Clientmarkers clients={clients.contacts}/>
+        <Clientmarkers clients={clients.clients}/>
       </Map>
     );
 };

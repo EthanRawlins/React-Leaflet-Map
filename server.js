@@ -1,3 +1,5 @@
+// PLEASE DONT RUN THE BACKEND UNLESS THERE IS ANY UPDATES. IT WILL ERASE THE ENTIRE CONTACT1.JSON FILE!!!!!!!!!!
+
 const express = require('express')
 const path = require('path')
 const app = express()
@@ -5,11 +7,13 @@ const app = express()
 const mysql      = require('mysql');
 const fs = require('fs')
 
-const request = require('request'); 
 const Nominatim = require('nominatim-geocoder'); // for geocoding
+const { response } = require('express');
+const geocoder = new Nominatim()
 
-const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-function connect() {
+
+// database connection, use it only when the database updates
+/*
 const connection = mysql.createConnection({
     user: "feelthes_jared",
     password: "ullrich",
@@ -26,28 +30,22 @@ connection.connect(function(err) {
     console.log('Connected as id ' + connection.threadId);
 });
 
-connection.query('SELECT ID, FirstName, LastName, PhoneNumber, StreetAddress, UnitNumber, City, StateProvince, ZipCode, Latitude, Longitude FROM contacts', function (error, results, fields) {
-    if (error) {
-        throw error;
-    }
+connection.query('SELECT ID, FirstName, LastName, PhoneNumber, StreetAddress, UnitNumber, City, StateProvince, ZipCode FROM contacts', function (error, results, fields) {
 
     const mapData = JSON.stringify(results);
 
-    fs.writeFileSync('./src/assets/contact.json', '{"ActiveContacts":' + mapData + '}', err => {
+    fs.writeFileSync('./src/assets/contact.json', mapData, err => {
         if (err) {
             console.log('Error writing file', err)
         } else {
             console.log('Successfully wrote file')
         }
     });
-    // mapData = JSON.parse(results);
-});
-
-}
+});*/
 
 function abbrState(input, to){
     
-    var states = [
+    const states = [
         ['Arizona', 'AZ'],
         ['Alabama', 'AL'],
         ['Alaska', 'AK'],
@@ -100,25 +98,24 @@ function abbrState(input, to){
         ['Wyoming', 'WY'],
     ];
 
-    if (to == 'abbr'){
+    if (to === 'abbr'){
         input = input.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-        for(i = 0; i < states.length; i++){
-            if(states[i][0] == input){
+        for(let i = 0; i < states.length; i++){
+            if(states[i][0] === input){
                 return(states[i][1]);
             }
         }    
-    } else if (to == 'name'){
+    } else if (to === 'name'){
         input = input.toUpperCase();
-        for(i = 0; i < states.length; i++){
-            if(states[i][1] == input){
+        for(let i = 0; i < states.length; i++){
+            if(states[i][1] === input){
                 return(states[i][0]);
             }
         }    
     }
 }
 
-function addr_search()
-{
+console.log('hello')
 
     fs.readFile('./src/assets/contact.json', 'utf8', (err, jsonString) => {
         if (err) {
@@ -127,66 +124,57 @@ function addr_search()
         }
         try {
             const data = JSON.parse(jsonString)
-            var query = '';
- 
-            for( let prop in data['ActiveContacts'] ){
-                if (data['ActiveContacts'][prop].StreetAddress != "" && data['ActiveContacts'][prop].StreetAddress != " ") {
-               //var url = "https://nominatim.openstreetmap.org/search?format=json&limit=3&q=" + prop.StreetAddress + ', ' + prop.City + ', ' + prop.StateProvince;
-               
-                const geocoder = new Nominatim();
-                if (data['ActiveContacts'][prop].StateProvince.length <= 3) {
-                    const stateName = abbrState(data['ActiveContacts'][prop].StateProvince, 'name');
-                    query = '\'' + data['ActiveContacts'][prop].StreetAddress + ', ' + data['ActiveContacts'][prop].City + ', ' + stateName + '\'';
+
+            // use this line to overwrite the file
+            fs.writeFile('./src/assets/contact1.json', '{"clients":[', function(){console.log('done')})
+
+            let query = '';
+
+            for( const prop in data ){
+                if (data[prop].StreetAddress !== "" || data[prop].StreetAddress !== " ") {
+
+                if (data[prop].StateProvince.length <= 3) {
+                    const stateName = abbrState(data[prop].StateProvince, 'name');
+                    query = data[prop].StreetAddress + ', ' + data[prop].City + ', ' + stateName;
                 }
                 else {
-                    query = '\'' + data['ActiveContacts'][prop].StreetAddress + ', ' + data['ActiveContacts'][prop].City + ', ' + data['ActiveContacts'][prop].StateProvince + '\'';
+                    query = data[prop].StreetAddress + ', ' + data[prop].City + ', ' + data[prop].StateProvince;
                 }
 
-
-              //xmlhttp.onreadystatechange = function()
-               //{
-                 //if (this.readyState == 4 && this.status == 200)
-                 //{
-                   //const temp = JSON.parse(this.responseText);
-                   geocoder.search({ q: query })
-                   .then((response) => { 
-                       data['ActiveContacts'][prop].geometry = '[' + response.lat + ',' + response.lon + ']';
-                    console.log(response);
-                   })
-                   .catch((error) => {
-                       console.log(error)
-                   })
-                }
-                const data1 = JSON.stringify(data);
-                fs.writeFileSync('./src/assets/contact.json', '{"ActiveContacts":' + data1 + '}', err => {
+                geocoder.search({ q: `${query}` })
+                .then((res) => {
+                const array = [parseFloat(res[0].lat), parseFloat(res[0].lon)]
+                data[prop].geometry = array;
+                console.log(res[0]);
+                if (prop < data.length - 1){
+                fs.appendFile('./src/assets/contact1.json', JSON.stringify(data[prop]) + ',', err => {
                     if (err) {
                         console.log('Error writing file', err)
                     } else {
-                        console.log('Successfully wrote file')
+                        console.log('Successfully wrote file ' + prop)
                     }
-                });
-                
-               //xmlhttp.open("GET", url, true);
-               //xmlhttp.send(); 
+                })}
+                 else {
+                fs.appendFile('./src/assets/contact1.json', JSON.stringify(data[prop]) + ']}', err => {
+                    if (err) {
+                        console.log('Error writing file', err)
+                    } else {
+                        console.log('Successfully wrote file ' + prop)
+                    }
+                })}
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+            }
             }
     } catch(err) {
             console.log('Error parsing JSON string:', err)
         }
     });
 
-}
-
-
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'))
 })
-
-app.listen(8080, function() {
-    connect();
-    addr_search();
-  });
-
-
-//connection.end();
